@@ -1,11 +1,12 @@
 const expressAsyncHandler = require("express-async-handler")
 const Goal = require('../models/goal.model')
+const User = require('../models/user.model')
 
 // @desc     Get All Goals
 // @route    GET /api/goals
 // @access   Private
 const getGoals = expressAsyncHandler(async (req, res) => {
-    const goals = await Goal.find()
+    const goals = await Goal.find({ user: req.user._id })
     res.status(200).json(goals)
 })
 
@@ -19,6 +20,7 @@ const setGoal = expressAsyncHandler(async (req, res) => {
     }
 
     const goal = await Goal.create({
+        user: req.user._id,
         text: req.body.text
     })
 
@@ -37,11 +39,20 @@ const updateGoal = expressAsyncHandler(async (req, res) => {
         throw new Error('Goal not found')
     }
 
+    if (!req.user) {
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    // Make sure the logged in user matches the goal user
+    if (goal.user.toString() !== req.user.id) {
+        res.status(401)
+        throw new Error('User not authorized')
+    }
+
     const updatedGoal = await Goal.findByIdAndUpdate(req.params.id,
         req.body, { new: true })
-
-
-    res.status(200).json({ message: `Updated goal ${req.params.id}` })
+    res.status(200).json(updatedGoal)
 
 })
 
@@ -56,10 +67,20 @@ const deleteGoal = expressAsyncHandler(async (req, res) => {
         throw new Error('Goal not found')
     }
 
-    const deletedGoal = await Goal.findByIdAndDelete(req.params.id)
+    if (!req.user) {
+        res.status(401)
+        throw new Error('User not found')
+    }
 
+    // Make sure the logged in user matches the goal user
+    if (goal.user.toString() !== req.user.id) {
+        res.status(401)
+        throw new Error('User not authorized')
+    }
 
-    res.status(200).json({ message: `Delete goal ${req.params.id}` })
+    await goal.remove()
+
+    res.status(200).json({ id: req.params.id })
 })
 
 module.exports = { getGoals, setGoal, updateGoal, deleteGoal }
