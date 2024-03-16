@@ -97,15 +97,52 @@ h3 {
     margin: 10px 0;
     padding: 20px 0 10px;
     position: relative;
+    height: 100px;
+    box-shadow: 0px 0px 10px #a5a5a596;
+    border-radius: 5px;
 }
 
 .goal .close {
     position: absolute;
     top: 10px;
     right: 15px;
+    font-size: 20px;
     cursor: pointer;
     border: none;
     background: none;
+}
+
+.goal .edit {
+    position: absolute;
+    top: 10px;
+    right: 35px;
+    font-size: 20px;
+    color: blue;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.goal .not-update {
+    color: #000;
+    border: none;
+    font-size: 20px;
+    text-align: center;
+    outline: none;
+    font-weight: 600;
+    margin-bottom: 10px;
+    background: none;
+}
+
+.goal .update {
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding: 2px;
+    border: 1px solid #737373;
+    outline: none;
+    border-radius: 2px;
+    font-size: 20px;
+    text-align: center;
 }
 
 .form,
@@ -190,6 +227,8 @@ h3 {
     border-radius: 50%;
     animation: spin 1.2s linear infinite;
 }
+
+
 
 @keyframes spin {
     0% {

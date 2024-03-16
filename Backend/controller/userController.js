@@ -51,7 +51,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const user = await User.findOne({ email })
 
-    if (user && bcrypt.compare(password, user.password)) {
+    if (user && (await bcrypt.compare(password, user.password))) {
         res.status(200).json({
             id: user._id,
             name: user.name,
@@ -71,11 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
 // @access   Private
 const getMe = asyncHandler(async (req, res) => {
     const { _id, name, email } = await User.findById(req.user.id);
-    res.status(200).json({
-        id: _id,
-        name,
-        email
-    })
+    res.status(200).json(req.user)
 })
 
 // @create a JWT token

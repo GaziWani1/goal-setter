@@ -6,8 +6,10 @@ const User = require('../models/user.model')
 // @route    GET /api/goals
 // @access   Private
 const getGoals = expressAsyncHandler(async (req, res) => {
+
     const goals = await Goal.find({ user: req.user._id })
     res.status(200).json(goals)
+
 })
 
 // @desc     Add goal
@@ -54,12 +56,15 @@ const updateGoal = expressAsyncHandler(async (req, res) => {
         req.body, { new: true })
     res.status(200).json(updatedGoal)
 
+
+
 })
 
 // @desc     Delete Goals
 // @route    DELETE /api/goals/:id
 // @access   Private
 const deleteGoal = expressAsyncHandler(async (req, res) => {
+    console.log(req.params.id)
     const goal = await Goal.findById(req.params.id)
 
     if (!goal) {
@@ -78,7 +83,7 @@ const deleteGoal = expressAsyncHandler(async (req, res) => {
         throw new Error('User not authorized')
     }
 
-    await goal.remove()
+    await Goal.findByIdAndDelete(req.params.id)
 
     res.status(200).json({ id: req.params.id })
 })
